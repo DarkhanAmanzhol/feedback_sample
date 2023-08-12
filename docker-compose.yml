@@ -1,0 +1,27 @@
+version: '3'
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:80
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:latest
+    container_name: feedback_project_db
+    environment:
+      MYSQL_ROOT_PASSWORD: devphpuser
+      MYSQL_DATABASE: feedback_db
+      MYSQL_USER: phpuser
+      MYSQL_PASSWORD: devphpuser
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/dump/users.sql:/docker-entrypoint-initdb.d/users.sql
+      - ./database/dump/feedbacks.sql:/docker-entrypoint-initdb.d/feedbacks.sql
+
+volumes:
+  mysql_data:

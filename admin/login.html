@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+    </style>
+</head>
+
+<body class="vh-100">
+    <div class="container vh-100">
+        <div class="vh-100 d-flex align-items-center justify-content-center">
+            <form id="loginForm">
+                <div class="my-3">
+                    <label for="username" class="form-label">Имя <span class="text-danger">*
+                            обязательный</span></label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Ваше имя"
+                        required>
+                </div>
+                <div class="my-3">
+                    <label for="username" class="form-label">Пароль <span class="text-danger">*
+                            обязательный</span></label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Ваш пароль"
+                        required>
+                </div>
+                <button type="submit" name="submit" class="btn btn-primary mb-3 float-end">Войти</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        // Security protector (not need for authorized users to see this page)
+        if (window.localStorage.getItem('access_token')) {
+            $.ajax({
+                url: "/api/user",
+                type: "GET",
+                dataType: "json",
+                headers: {
+                    'Authorization': `Bearer ${window.localStorage.getItem('access_token')}`,
+                    'Content-Type': 'application/json'
+                },
+                success: function (result) {
+                    if (!result.status) {
+                        window.localStorage.removeItem('access_token');
+                    } else {
+                        window.location.replace("/admin/index.html");
+                    }
+                },
+            });
+        }
+
+        $("#loginForm").submit(function (e) {
+            let loginData = {
+                username: $("#username").val(),
+                password: $("#password").val(),
+            }
+
+            $.ajax({
+                url: "/api/login.php",
+                type: "POST",
+                data: loginData,
+                success: function (result) {
+                    window.localStorage.setItem('access_token', result.access_token);
+                    window.location.replace("/admin/index.html");
+                },
+            });
+
+            e.preventDefault();
+        });
+    });
+</script>
+
+</html>
