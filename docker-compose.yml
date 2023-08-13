@@ -17,7 +17,7 @@ services:
       MYSQL_USER: phpuser
       MYSQL_PASSWORD: devphpuser
     ports:
-      - 3306:3306
+      - 33066:3306
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/dump/users.sql:/docker-entrypoint-initdb.d/users.sql
